@@ -1,0 +1,138 @@
+{
+	"info": {
+		"_postman_id": "42c27d00-d7db-435d-b14e-196bc3d2adc3",
+		"name": "Code Challenge",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"_exporter_id": "1299124",
+		"_collection_link": "https://speeding-robot-1655.postman.co/workspace/Perficient~d605adc9-d32e-4319-9177-53faa7a42379/collection/1299124-42c27d00-d7db-435d-b14e-196bc3d2adc3?action=share&creator=1299124&source=collection_link"
+	},
+	"item": [
+		{
+			"name": "/users",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Validate the response status is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"The response should contain an array of users\", function () {\r",
+							"    let responseData=pm.response.json();\r",
+							"    pm.expect(Array.isArray(responseData.data)).is.eq(true);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Each user should have a unique\", function() {\r",
+							"  const response = pm.response.json().data;\r",
+							"  let IDs = response.map(obj => obj.id);\r",
+							"  pm.expect((new Set(IDs)).size !== IDs.length).to.equal(false);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://{{URL}}/{{resource}}?page=2",
+					"protocol": "https",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"{{resource}}"
+					],
+					"query": [
+						{
+							"key": "page",
+							"value": "2"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "`/users/{id}",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Validate the response status code to ensure it is a successful response\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Validate the response body to ensure it contains detailed information about the specific user with the matching ID\", function () {\r",
+							"    let responseData=pm.response.json();\r",
+							"    let userResponse=responseData.data;\r",
+							"    pm.expect(userResponse.id).be.eq(pm.collectionVariables.get(\"user_id\"));\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": "https://{{URL}}/{{resource}}/{{user_id}}"
+			},
+			"response": []
+		},
+		{
+			"name": "/users",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Validate the response status code to ensure the user creation was successful\", function () {\r",
+							"    pm.response.to.have.status(201);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Validate the response body to ensure it contains the newly created user's information\", function () {\r",
+							"    let responseData=pm.response.json();\r",
+							"    pm.expect(responseData.name).to.eq(\"Santiago\");\r",
+							"    pm.expect(responseData.job).to.eq(\"QA Automation\");\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\": \"Santiago\",\r\n    \"job\": \"QA Automation\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://{{URL}}/{{resource}}"
+			},
+			"response": []
+		}
+	],
+	"variable": [
+		{
+			"key": "URL",
+			"value": "reqres.in/api"
+		},
+		{
+			"key": "resource",
+			"value": "users"
+		},
+		{
+			"key": "user_id",
+			"value": ""
+		}
+	]
+}
